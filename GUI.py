@@ -7,7 +7,7 @@ Created on Fri Jul 15 19:06:22 2022
 """
 import tkinter as tk
 import tkinter.ttk as ttk
-
+import wheel as whl
 # class count:
 #     def __init__(self, initVal=0):
 #         self.counter = initVal
@@ -67,7 +67,9 @@ def spin_wheel():
     for i in range(lastRow):
         i=i+1#because text seems to be 1-indexed...
         names.append(nameTxt.get(f"{i}.0",f"{i}.end"))
-        tickets.append(ticketTxt.get(f"{i}.0",f"{i}.end"))
+        tickets.append(int(ticketTxt.get(f"{i}.0",f"{i}.end")))
+        
+    whl.SpinWheel(names, tickets)
     print(names)
     print(tickets)
 master = tk.Tk()
@@ -91,12 +93,12 @@ ticketTxt.grid(row=3,column=1)
 ttk.Button(master, text="Quit", command=master.destroy).grid(row=2,column=0, sticky=tk.W)
 ttk.Button(master, text="Log entry", command=log_entry).grid(row=2,column=1, sticky=tk.W)
 ttk.Button(master, text="Spin wheel",command=spin_wheel).grid(row=2,column=2)
-# nameTxt.insert(tk.END,"""a
-# b
-# c
-# """)
-# ticketTxt.insert(tk.END,"""1
-# 2
-# 3
-# """)               
+nameTxt.insert(tk.END,"""a
+b
+c
+""")
+ticketTxt.insert(tk.END,"""1
+2
+3
+""")               
 master.mainloop()
