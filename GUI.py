@@ -8,46 +8,6 @@ Created on Fri Jul 15 19:06:22 2022
 import tkinter as tk
 import tkinter.ttk as ttk
 import wheel as whl
-# class count:
-#     def __init__(self, initVal=0):
-#         self.counter = initVal
-        
-#     def increaseCounter(self):
-#         self.counter += 1
-
-#     def decreaseCounter(self):
-#         self.counter -= 1
-
-#     def getVal(self):
-#         return self.counter
-    
-# def increaseVal():
-#     counter.increaseCounter()
-#     label["text"]=f"{counter.getVal()}"
-    
-# def decreaseVal():
-#     counter.decreaseCounter()
-#     label["text"]=f"{counter.getVal()}"
-
-# root = Tk()
-
-# frm = ttk.Frame(root, padding=10)
-# frm.grid()
-
-# ttk.Button(frm, text="Quit", command=root.destroy).grid(column=0, row=1)
-
-# counter = count()
-
-# addBtn = ttk.Button(frm,text="+1",command=increaseVal)#counter.increaseCounter)
-# addBtn.grid(column=0, row=2)
-
-# subtractBtn = ttk.Button(frm,text="-1",command=decreaseVal)
-# subtractBtn.grid(column=1, row=2)
-
-# frame=ttk.Frame(frm,relief=RAISED)
-# frame.grid(column=1,row=1)
-# label=ttk.Label(frame,text=f"{counter.getVal()}")
-# label.grid(column=1, row=0, sticky="w")
 
 def log_entry():
     if eTick.get().isnumeric():
@@ -71,13 +31,13 @@ def spin_wheel():
         names.append(nameTxt.get(f"{i}.0",f"{i}.end"))
         tickets.append(int(ticketTxt.get(f"{i}.0",f"{i}.end")))
         
-    winner=whl.SpinWheel(names, tickets,False)
+    winner = whl.SpinWheel(names, tickets,False)
     # !TODO have to remove one ticket from the winner.
     tickets[names.index(winner)]-=1
-    ticketTxt.delete('0.0','end.end')
-    
-    print(names)
-    print(tickets)
+    ticketTxt.delete('1.0',tk.END)
+    for i in tickets:
+        ticketTxt.insert(tk.END,f"{i}\n")
+    print(winner)
 master = tk.Tk()
 
 ttk.Label(master, text="Name").grid(row=0,column=0)

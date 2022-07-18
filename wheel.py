@@ -12,10 +12,7 @@ def SpinWheel(names, tickets,randomized=True):
     import random as rng
     rng.seed()
     try:
-        ttl.reset() #god knows why, but the program needs to throw an error 50% of the time to work...
-    except:
-        print('')
-            
+        ttl.reset() #god knows why, but the program needs to throw an error 50% of the time to work...            
     finally:
         #Defining the shape of the wheel, and number of slices
         RADIUS = 200
@@ -94,22 +91,22 @@ def SpinWheel(names, tickets,randomized=True):
         
             # rotating turtles in clockwise direction
             for index, turtle in enumerate(turtles):
-                # turtle.color(*turtles[(index + 1) % NUMBER_OF_WEDGES].color()) # this is probably more efficient, but I had problems updating the needle properly
                 turtle.right(SLICE_ANGLE/2)
                 
             needle.right(SLICE_ANGLE/2)
             screen.update()
-            # screen.ontimer(draw_circle, 40)
-        #%%For debugging purposes
+            
+        #For debugging purposes
         if not randomized:
             timer=1
             head=90
             rotCount=0
-            rotMax=1#rng.randint(5,15)
-            randAng =180# rng.randint(1,360)
-            friction=2#rng.random()*0.1+1
-            maxTimer = 1000#rng.randint(1200,1700)
-        #%%
+            rotMax=1
+            randAng =180
+            friction=2
+            maxTimer = 1000
+            
+        #For the actual application
         else:
             timer=1
             head=90
@@ -118,8 +115,7 @@ def SpinWheel(names, tickets,randomized=True):
             randAng = rng.randint(1,360)
             friction=rng.random()*0.1+1
             maxTimer =rng.randint(1200,1700)
-        #%%
-        print(rotMax)
+        #
         while timer<maxTimer:
             head_old=head
             head=needle.heading()
@@ -131,14 +127,12 @@ def SpinWheel(names, tickets,randomized=True):
                 timer*=friction
             # screen.update()
         head = needle.heading()%360
-        print(divAng)
-        print(names)
         for i,n in enumerate(names):
             if head > divAng[i] and head < divAng[i+1]:
-                print(n+" is the winner!")
-                screen.exitonclick()
+                # screen.exitonclick()
                 return n
-
+            ttl.bye()
+        ttl.mainloop()
 if __name__=='__main__':
     names=['a','b','c']
     tickets=[1,2,3]
