@@ -63,19 +63,22 @@ def log_entry():
         eTick.insert(0,"Must be an integer")
         
 def spin_wheel():
+    names = []
+    tickets = []
     lastRow = int(nameTxt.index('end').split('.')[0])-2
     for i in range(lastRow):
         i=i+1#because text seems to be 1-indexed...
         names.append(nameTxt.get(f"{i}.0",f"{i}.end"))
         tickets.append(int(ticketTxt.get(f"{i}.0",f"{i}.end")))
         
-    whl.SpinWheel(names, tickets)
+    winner=whl.SpinWheel(names, tickets,False)
+    # !TODO have to remove one ticket from the winner.
+    tickets[names.index(winner)]-=1
+    ticketTxt.delete('0.0','end.end')
+    
     print(names)
     print(tickets)
 master = tk.Tk()
-
-names = []
-tickets = []
 
 ttk.Label(master, text="Name").grid(row=0,column=0)
 ttk.Label(master, text="Tickets").grid(row=0,column=1)

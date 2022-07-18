@@ -5,7 +5,7 @@ Created on Sun Jul 17 13:10:37 2022
 
 @author: jkescher
 """
-def SpinWheel(names, tickets):
+def SpinWheel(names, tickets,randomized=True):
     import turtle as ttl
     from turtle import Screen, Turtle
     from colorsys import hsv_to_rgb
@@ -47,17 +47,18 @@ def SpinWheel(names, tickets):
         line.sety(turtle.ycor()+RADIUS + 20)
         line.begin_poly()
         line.sety(line.ycor()-20)
-        line.color(1,1,1)
         line.end_poly()
         
         #Registering all of our shapes to the screen
+        screen.clear()
+        screen.tracer(False)
         screen.register_shape("wedge", turtle.get_poly())
         screen.register_shape("line", line.get_poly())
         screen.register_shape("needle", needle.get_poly())
         
         #Dividing the perimeter by number of tickets bought
         ticketSum = sum(tickets)
-        divAng=[90]
+        divAng=[0]
         for i in tickets:
             divAng.append(divAng[-1]+i/ticketSum*360)
             divLine = Turtle("line")
@@ -66,8 +67,8 @@ def SpinWheel(names, tickets):
         # Entering names for the sections
         nameTurtle=Turtle(visible=False)
         nameTurtle.penup()
-        nameTurtle.sety(nameTurtle.ycor()+RADIUS+30)
-        nameTurtle.setheading(180)
+        nameTurtle.setx(nameTurtle.xcor()+RADIUS+30)
+        nameTurtle.setheading(90)
         for i,n in enumerate(names):
             sector = (divAng[i+1]-divAng[i])/2
             nameTurtle.circle(RADIUS+30, extent=sector)
@@ -99,13 +100,25 @@ def SpinWheel(names, tickets):
             needle.right(SLICE_ANGLE/2)
             screen.update()
             # screen.ontimer(draw_circle, 40)
-        timer=1
-        head=90
-        rotCount=0
-        rotMax=rng.randint(5,15)
-        randAng = rng.randint(1,360)
-        friction=rng.random()*0.1+1
-        maxTimer = rng.randint(1200,1700)
+        #%%For debugging purposes
+        if not randomized:
+            timer=1
+            head=90
+            rotCount=0
+            rotMax=1#rng.randint(5,15)
+            randAng =180# rng.randint(1,360)
+            friction=2#rng.random()*0.1+1
+            maxTimer = 1000#rng.randint(1200,1700)
+        #%%
+        else:
+            timer=1
+            head=90
+            rotCount=0
+            rotMax=rng.randint(5,15)
+            randAng = rng.randint(1,360)
+            friction=rng.random()*0.1+1
+            maxTimer =rng.randint(1200,1700)
+        #%%
         print(rotMax)
         while timer<maxTimer:
             head_old=head
@@ -117,12 +130,16 @@ def SpinWheel(names, tickets):
             if rotCount>rotMax and head < randAng or rotCount > rotMax+1:
                 timer*=friction
             # screen.update()
-        print(needle.heading())
+        head = needle.heading()%360
         print(divAng)
         print(names)
-        screen.exitonclick()#somehow, this stops the application...
+        for i,n in enumerate(names):
+            if head > divAng[i] and head < divAng[i+1]:
+                print(n+" is the winner!")
+                screen.exitonclick()
+                return n
 
 if __name__=='__main__':
     names=['a','b','c']
     tickets=[1,2,3]
-    SpinWheel(names,tickets)
+    winner=SpinWheel(names,tickets,False)
