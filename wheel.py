@@ -115,22 +115,28 @@ def SpinWheel(names, tickets,randomized=True):
             randAng = rng.randint(1,360)
             friction=rng.random()*0.1+1
             maxTimer =rng.randint(1200,1700)
-        #
+        #This part slows down the wheel based upon semi-random criteria
         while timer<maxTimer:
+            # Counting the number of rotations
             head_old=head
             head=needle.heading()
             if head>head_old:
                 rotCount+=1
+                
+            #Drawing circle with a period of timer milliseconds    
             draw_circle()
             screen.ontimer(draw_circle(),round(timer))
-            if rotCount>rotMax and head < randAng or rotCount > rotMax+1:
+            
+            #If the wheel has spun a couple of times, and some amount of one rotation it will slow down, i.e the update period increases.
+            if rotCount > rotMax and head < randAng or rotCount > rotMax+1:
                 timer*=friction
-            # screen.update()
+        # checking who the winner is        
         head = needle.heading()%360
         for i,n in enumerate(names):
             if head > divAng[i] and head < divAng[i+1]:
                 # screen.exitonclick()
                 return n
+            #Terminating the screen.
             ttl.bye()
         ttl.mainloop()
 if __name__=='__main__':
