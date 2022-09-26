@@ -173,30 +173,23 @@ def spin_wheel():
     for i in tickets:
         ticketTxt.insert(tk.END,f"{i}\n")
     print(winner)
-master = tk.Tk()
-
-ttk.Label(master, text="Name").grid(row=0,column=0)
-ttk.Label(master, text="Tickets").grid(row=0,column=1)
-
-eName = ttk.Entry(master)
-eTick = ttk.Entry(master)
-
-eName.grid(row=1, column=0)
-eTick.grid(row=1,column=1)
-
-nameTxt = tk.Text(master, height=20, width=20)
-nameTxt.grid(row=3,column=0)
-ticketTxt = tk.Text(master, height=20, width=20)
-ticketTxt.grid(row=3,column=1)
-ttk.Button(master, text="Quit", command=master.destroy).grid(row=2,column=0, sticky=tk.W)
-ttk.Button(master, text="Log entry", command=log_entry).grid(row=2,column=1, sticky=tk.W)
-ttk.Button(master, text="Spin wheel",command=spin_wheel).grid(row=2,column=2)
-# nameTxt.insert(tk.END,"""Karl
-# Knut
-# Lu
-# """)
-# ticketTxt.insert(tk.END,"""2
-# 2
-# 2
-# """)               
-master.mainloop()
+if __name__ == '__main__':
+    master = tk.Tk()
+    
+    ttk.Label(master, text="Name").grid(row=0,column=0)
+    ttk.Label(master, text="Tickets").grid(row=0,column=1)
+    
+    eName = ttk.Entry(master)
+    eTick = ttk.Entry(master)
+    
+    eName.grid(row=1, column=0)
+    eTick.grid(row=1,column=1)
+    
+    nameTxt = tk.Text(master, height=20, width=20)
+    nameTxt.grid(row=3,column=0)
+    ticketTxt = tk.Text(master, height=20, width=20)
+    ticketTxt.grid(row=3,column=1)
+    ttk.Button(master, text="Quit", command=master.destroy).grid(row=2,column=0, sticky=tk.W)
+    ttk.Button(master, text="Log entry", command=log_entry).grid(row=2,column=1, sticky=tk.W)
+    ttk.Button(master, text="Spin wheel",command=spin_wheel).grid(row=2,column=2)        
+    master.mainloop()
