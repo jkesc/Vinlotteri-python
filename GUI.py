@@ -165,7 +165,7 @@ def spin_wheel():
         names.append(nameTxt.get(f"{i}.0",f"{i}.end"))
         tickets.append(int(ticketTxt.get(f"{i}.0",f"{i}.end")))
         
-    winner = SpinWheel(names, tickets,False)
+    winner = SpinWheel(names, tickets)
     tk.messagebox.showinfo(message=f"The winner is {winner}!")
     # !TODO have to remove one ticket from the winner.
     tickets[names.index(winner)]-=1
@@ -191,12 +191,12 @@ ticketTxt.grid(row=3,column=1)
 ttk.Button(master, text="Quit", command=master.destroy).grid(row=2,column=0, sticky=tk.W)
 ttk.Button(master, text="Log entry", command=log_entry).grid(row=2,column=1, sticky=tk.W)
 ttk.Button(master, text="Spin wheel",command=spin_wheel).grid(row=2,column=2)
-nameTxt.insert(tk.END,"""a
-b
-c
-""")
-ticketTxt.insert(tk.END,"""1
-2
-3
-""")               
+# nameTxt.insert(tk.END,"""Karl
+# Knut
+# Lu
+# """)
+# ticketTxt.insert(tk.END,"""2
+# 2
+# 2
+# """)               
 master.mainloop()
