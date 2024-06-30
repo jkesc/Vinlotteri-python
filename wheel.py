@@ -5,7 +5,7 @@ Created on Sun Jul 17 13:10:37 2022
 
 @author: jkescher
 """
-def SpinWheel(names, tickets,randomized=True):
+def SpinWheel(names, tickets,randomized=True, pelton=False):
     import turtle as ttl
     from turtle import Screen, Turtle
     from colorsys import hsv_to_rgb
@@ -15,9 +15,16 @@ def SpinWheel(names, tickets,randomized=True):
         ttl.reset() #god knows why, but the program needs to throw an error 50% of the time to work...            
     finally:
         #Defining the shape of the wheel, and number of slices
-        RADIUS = 200
+        RADIUS = 180
         NUMBER_OF_WEDGES = sum(tickets)*10
         SLICE_ANGLE = 360 / NUMBER_OF_WEDGES
+
+        NUMBER_OF_BUCKETS = 17
+        BUCKET_ANGLE = 360 / NUMBER_OF_BUCKETS
+        if pelton:
+            BUCKET_DIAMETER = RADIUS*0.4
+        else:
+            BUCKET_DIAMETER = 0
         
         #Making the screen to draw on
         screen = Screen()
@@ -26,9 +33,9 @@ def SpinWheel(names, tickets,randomized=True):
         #defining the needle, indicating the winner
         needle = Turtle(visible=False)
         needle.begin_poly()
-        needle.penup()
-        needle.sety(needle.ycor()+RADIUS+30)
-        needle.setheading(90)
+        # needle.penup()
+        needle.sety(needle.ycor()+RADIUS+BUCKET_DIAMETER+30)
+        # needle.setheading(90)
         needle.end_poly()
         
         # create a pie wedge-shaped cursor
@@ -39,19 +46,45 @@ def SpinWheel(names, tickets,randomized=True):
         turtle.home()
         turtle.end_poly()
         
+        # create a semi-circular bucket
+        bucket = Turtle(visible=False)
+        bucket.sety(RADIUS+BUCKET_DIAMETER)
+        bucket.begin_poly()
+        bucket.circle(-BUCKET_DIAMETER/2, extent=180)
+        bucket.sety(RADIUS+BUCKET_DIAMETER)
+        bucket.end_poly()
+        
         #Defining lines to separate participants
         line = Turtle(visible=False)
-        line.sety(turtle.ycor()+RADIUS + 20)
+        line.sety(turtle.ycor()+RADIUS +BUCKET_DIAMETER+ 20)
         line.begin_poly()
         line.sety(line.ycor()-20)
         line.end_poly()
-        
+
+        # Making jet
+        jet = Turtle(visible=False)
+        jet.setx(-RADIUS)
+        jet.begin_poly()
+        jet.setx(-RADIUS-BUCKET_DIAMETER)
+        jet.sety(-RADIUS-5*BUCKET_DIAMETER)
+        jet.setx(-RADIUS)
+        jet.sety(0)
+        jet.end_poly()
+
         #Registering all of our shapes to the screen
         screen.clear()
         screen.tracer(False)
+        screen.register_shape("jet", jet.get_poly())
         screen.register_shape("wedge", turtle.get_poly())
         screen.register_shape("line", line.get_poly())
         screen.register_shape("needle", needle.get_poly())
+        screen.register_shape("bucket", bucket.get_poly())
+    
+        jetTurtle = Turtle("jet")
+        jetTurtle.color((0,0,1))
+        if not pelton:
+            jetTurtle.hideturtle()
+        
         
         #Dividing the perimeter by number of tickets bought
         ticketSum = sum(tickets)
@@ -64,13 +97,14 @@ def SpinWheel(names, tickets,randomized=True):
         # Entering names for the sections
         nameTurtle=Turtle(visible=False)
         nameTurtle.penup()
-        nameTurtle.setx(nameTurtle.xcor()+RADIUS+30)
+        nameTurtle.setx(nameTurtle.xcor()+RADIUS+BUCKET_DIAMETER+30)
         nameTurtle.setheading(90)
+        
         for i,n in enumerate(names):
             sector = (divAng[i+1]-divAng[i])/2
-            nameTurtle.circle(RADIUS+30, extent=sector)
+            nameTurtle.circle(RADIUS+BUCKET_DIAMETER+30, extent=sector)
             nameTurtle.write(n)
-            nameTurtle.circle(RADIUS+30, extent=sector)
+            nameTurtle.circle(RADIUS+BUCKET_DIAMETER+30, extent=sector)
             
         #setting needle start position to top, in the middle of one slice
         needle=Turtle("needle")
@@ -86,6 +120,16 @@ def SpinWheel(names, tickets,randomized=True):
             turtle.setheading(hue * SLICE_ANGLE+90)
         
             turtles.append(turtle)
+        
+        # Drawing all of the pelton-buckets:
+        for hue in range(NUMBER_OF_BUCKETS):
+            turtle = Turtle("bucket")
+            turtle.color(hsv_to_rgb(hue / NUMBER_OF_BUCKETS, 1.0, 1.0))
+            turtle.pencolor((0,0,0))
+            turtle.setheading(hue * BUCKET_ANGLE+90)
+        
+            turtles.append(turtle)
+        
         # function for updating the circle
         def draw_circle():
         
@@ -130,6 +174,7 @@ def SpinWheel(names, tickets,randomized=True):
             #If the wheel has spun a couple of times, and some amount of one rotation it will slow down, i.e the update period increases.
             if rotCount > rotMax and head < randAng or rotCount > rotMax+1:
                 timer*=friction
+                jetTurtle.hideturtle()
         # checking who the winner is        
         head = needle.heading()%360
         for i,n in enumerate(names):
@@ -142,4 +187,4 @@ def SpinWheel(names, tickets,randomized=True):
 if __name__=='__main__':
     names=['a','b','c']
     tickets=[1,2,3]
-    winner=SpinWheel(names,tickets,False)
+    winner=SpinWheel(names,tickets,False, True)
