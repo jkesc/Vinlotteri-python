@@ -5,7 +5,7 @@ Created on Sun Jul 17 13:10:37 2022
 
 @author: jkescher
 """
-def SpinWheel(names, tickets,randomized=True, pelton=False):
+def SpinWheel(names, tickets, randomized=True, pelton=False):
     import turtle as ttl
     from turtle import Screen, Turtle
     from colorsys import hsv_to_rgb
@@ -125,7 +125,6 @@ def SpinWheel(names, tickets,randomized=True, pelton=False):
         for hue in range(NUMBER_OF_BUCKETS):
             turtle = Turtle("bucket")
             turtle.color(hsv_to_rgb(hue / NUMBER_OF_BUCKETS, 1.0, 1.0))
-            turtle.pencolor((0,0,0))
             turtle.setheading(hue * BUCKET_ANGLE+90)
         
             turtles.append(turtle)
@@ -184,6 +183,7 @@ def SpinWheel(names, tickets,randomized=True, pelton=False):
             #Terminating the screen.
             ttl.bye()
         ttl.mainloop()
+
 if __name__=='__main__':
     names=['a','b','c']
     tickets=[1,2,3]
