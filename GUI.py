@@ -64,4 +64,6 @@ if __name__ == '__main__':
     pelton = tk.BooleanVar()
     pelton.set(True)
     ttk.Checkbutton(master, text = 'Pelton turbine', onvalue=True, offvalue=False, variable=pelton).grid(row=2,column=3)
+    ttk.Label(master, text="This program was created by Karl Escher (c) 2024",
+              font=('Arial', 8), foreground='grey').grid(row=4, column=0)
     master.mainloop()
