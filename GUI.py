@@ -15,6 +15,7 @@ from playsound3 import playsound
 import random as rng
 rng.seed()
 
+
 def log_entry(entry):
     if eTick.get().isnumeric():
 
@@ -28,7 +29,8 @@ def log_entry(entry):
     else:
         eTick.delete(0,tk.END)
         eTick.insert(0,"Must be an integer")
-        
+
+
 def run_lottery(entry_list: list, music_list = []):
     cwd = os.getcwd()
     music_path = os.path.join(cwd, 'music','spinning')
@@ -59,18 +61,6 @@ def run_lottery(entry_list: list, music_list = []):
     music_path = os.path.join(cwd, 'music','selection')
     pick_music(music_path)
 
-def destructor(master, entry_list, music_list):
-    now = dt.datetime.now()
-    excelpath = os.path.join(os.getcwd(),'out',f'lottery_{now.year}_{now.month}_{now.day}_{now.hour}_{now.minute}')
-    stop_all_music(music_list)
-    if len(entry_list)>1:
-        for i, e in enumerate(entry_list):
-            e.to_excel(f'{excelpath}_{i}.xlsx')
-    else:
-        print(f'printing to {excelpath}.xlsx')
-        entry_list[0].to_excel(f'{excelpath}.xlsx')
-    master.destroy()
-
 
 def pick_music(music_path):
     if os.path.exists(music_path):
@@ -82,6 +72,7 @@ def pick_music(music_path):
         music_object = None
     return music_object
 
+
 def stop_all_music(music_list):
     for m in music_list:
         try:
@@ -89,6 +80,19 @@ def stop_all_music(music_list):
                 m.stop()
         except Exception:
             continue
+
+
+def destructor(master, entry_list, music_list):
+    now = dt.datetime.now()
+    excelpath = os.path.join(os.getcwd(),'out',f'lottery_{now.year}_{now.month}_{now.day}_{now.hour}_{now.minute}')
+    if len(entry_list)>1:
+        for i, e in enumerate(entry_list):
+            e.to_excel(f'{excelpath}_{i}.xlsx')
+    else:
+        print(f'printing to {excelpath}.xlsx')
+        entry_list[0].to_excel(f'{excelpath}.xlsx')
+    stop_all_music(music_list)
+    master.destroy()
     
 
 if __name__ == '__main__':      
