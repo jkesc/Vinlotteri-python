@@ -11,6 +11,9 @@ from wheel import SpinWheel
 import datetime as dt
 import pandas as pd
 import os
+from playsound3 import playsound
+import random as rng
+rng.seed()
 
 def log_entry(entry):
     if eTick.get().isnumeric():
@@ -26,7 +29,12 @@ def log_entry(entry):
         eTick.delete(0,tk.END)
         eTick.insert(0,"Must be an integer")
         
-def run_lottery(entry_list: list):
+def run_lottery(entry_list: list, music_list = []):
+    cwd = os.getcwd()
+    music_path = os.path.join(cwd, 'music','spinning')
+    stop_all_music(music_list)
+    music_list.append(pick_music(music_path))
+    
     names = []
     tickets = []
     lastRow = int(nameTxt.index('end').split('.')[0])-2
@@ -47,10 +55,14 @@ def run_lottery(entry_list: list):
     for i in tickets:
         ticketTxt.insert(tk.END, f"{i}\n")
     print(winner)
+    stop_all_music(music_list)
+    music_path = os.path.join(cwd, 'music','selection')
+    pick_music(music_path)
 
-def destructor(master, entry_list):
+def destructor(master, entry_list, music_list):
     now = dt.datetime.now()
     excelpath = os.path.join(os.getcwd(),'out',f'lottery_{now.year}_{now.month}_{now.day}_{now.hour}_{now.minute}')
+    stop_all_music(music_list)
     if len(entry_list)>1:
         for i, e in enumerate(entry_list):
             e.to_excel(f'{excelpath}_{i}.xlsx')
@@ -58,9 +70,34 @@ def destructor(master, entry_list):
         print(f'printing to {excelpath}.xlsx')
         entry_list[0].to_excel(f'{excelpath}.xlsx')
     master.destroy()
+
+
+def pick_music(music_path):
+    if os.path.exists(music_path):
+        music_files = os.listdir(music_path)
+        music_files = [f for f in music_files if f.endswith('.mp3')]
+        music_name = rng.choice(music_files)
+        music_object = playsound(os.path.join(music_path, music_name), block=False)
+    else: 
+        music_object = None
+    return music_object
+
+def stop_all_music(music_list):
+    for m in music_list:
+        try:
+            if m.is_alive():
+                m.stop()
+        except Exception:
+            continue
     
-if __name__ == '__main__':
+
+if __name__ == '__main__':      
     entry_list = []
+    music_list = []
+    cwd = os.getcwd()
+    music_path = os.path.join(cwd, 'music','selection')
+    stop_all_music(music_list)
+    music_list.append(pick_music(music_path))
     master = tk.Tk()
     nameText = ttk.Label(master, text="Name")
     nameText.grid(row=0,column=0)
@@ -82,9 +119,9 @@ if __name__ == '__main__':
     ticketTxt = tk.Text(master, height=20, width=20)
     ticketTxt.grid(row=3,column=1)
     
-    QuitButton = ttk.Button(master, text="Quit", command=lambda: destructor(master, entry_list))
+    QuitButton = ttk.Button(master, text="Quit", command=lambda: destructor(master, entry_list, music_list))
     QuitButton.grid(row=2,column=0, sticky=tk.W)
-    RunButton = ttk.Button(master, text="Run lottery!", command=lambda:run_lottery(entry_list))
+    RunButton = ttk.Button(master, text="Run lottery!", command=lambda:run_lottery(entry_list, music_list))
     RunButton.grid(row=2,column=2)
     pelton = tk.BooleanVar()
     pelton.set(True)
