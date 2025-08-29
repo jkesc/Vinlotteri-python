@@ -16,15 +16,19 @@ def SpinWheel(names, tickets, randomized=True, pelton=False):
     finally:
         #Defining the shape of the wheel, and number of slices
         RADIUS = 180
-        NUMBER_OF_WEDGES = sum(tickets)*10
-        SLICE_ANGLE = 360 / NUMBER_OF_WEDGES
+        GOAL_NUMBER_OF_WEDGES=200
+        number_of_wedges = sum(tickets)*max(round(GOAL_NUMBER_OF_WEDGES/sum(tickets)),1)
+        SLICE_ANGLE = 360 / number_of_wedges
 
-        NUMBER_OF_BUCKETS = 17
+        NUMBER_OF_BUCKETS = 21
         BUCKET_ANGLE = 360 / NUMBER_OF_BUCKETS
         if pelton:
             BUCKET_DIAMETER = RADIUS*0.4
         else:
             BUCKET_DIAMETER = 0
+        
+        ## making max timer for rotations with nozzle, rotations after nozzle stopped, and min time for update interval.
+        
         
         #Making the screen to draw on
         screen = Screen()
@@ -114,9 +118,9 @@ def SpinWheel(names, tickets, randomized=True, pelton=False):
         turtles = []
         
         # Colouring all of the slices
-        for hue in range(NUMBER_OF_WEDGES):
+        for hue in range(number_of_wedges):
             turtle = Turtle("wedge")
-            turtle.color(hsv_to_rgb(hue / NUMBER_OF_WEDGES, 1.0, 1.0))
+            turtle.color(hsv_to_rgb(hue / number_of_wedges, 1.0, 1.0))
             turtle.setheading(hue * SLICE_ANGLE+90)
         
             turtles.append(turtle)
@@ -154,7 +158,7 @@ def SpinWheel(names, tickets, randomized=True, pelton=False):
             timer=1
             head=90
             rotCount=0
-            rotMax=rng.randint(5,15)
+            rotMax=rng.randint(1,4)
             randAng = rng.randint(1,360)
             friction=rng.random()*0.1+1
             maxTimer =rng.randint(1200,1700)
@@ -179,12 +183,13 @@ def SpinWheel(names, tickets, randomized=True, pelton=False):
         for i,n in enumerate(names):
             if head > divAng[i] and head < divAng[i+1]:
                 # screen.exitonclick()
+                print(f"the winner is {n}")
                 return n
             #Terminating the screen.
-            ttl.bye()
+        ttl.bye()
         ttl.mainloop()
-
+# %%
 if __name__=='__main__':
     names=['a','b','c']
     tickets=[1,2,3]
-    winner=SpinWheel(names,tickets,False, True)
+    winner=SpinWheel(names,tickets,True, True)

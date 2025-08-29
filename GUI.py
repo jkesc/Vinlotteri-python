@@ -19,12 +19,12 @@ rng.seed()
 def log_entry(entry):
     if eTick.get().isnumeric():
 
-        nameTxt.insert(tk.END,eName.get())
-        nameTxt.insert(tk.END,'\n')
-        ticketTxt.insert(tk.END,eTick.get())
-        ticketTxt.insert(tk.END,'\n')
-        eName.delete(0,tk.END)
-        eTick.delete(0,tk.END)
+        nameTxt.insert(tk.END, eName.get())
+        nameTxt.insert(tk.END, '\n')
+        ticketTxt.insert(tk.END, eTick.get())
+        ticketTxt.insert(tk.END, '\n')
+        eName.delete(0, tk.END)
+        eTick.delete(0, tk.END)
         entry.focus()
     else:
         eTick.delete(0,tk.END)
