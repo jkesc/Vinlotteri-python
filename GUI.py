@@ -31,12 +31,11 @@ def log_entry(entry):
         eTick.insert(0,"Must be an integer")
 
 
-def run_lottery(entry_list: list, music_list = []):
+def run_lottery(entry_list: list, music_list = []):      
     cwd = os.getcwd()
     music_path = os.path.join(cwd, 'music','spinning')
     stop_all_music(music_list)
     music_list.append(pick_music(music_path))
-    
     names = []
     tickets = []
     lastRow = int(nameTxt.index('end').split('.')[0])-2
@@ -45,10 +44,17 @@ def run_lottery(entry_list: list, music_list = []):
         i += 1  # because text seems to be 1-indexed...
         names.append(nameTxt.get(f"{i}.0", f"{i}.end"))
         tickets.append(int(ticketTxt.get(f"{i}.0", f"{i}.end")))
+    randindex = [i for i in range(len(names))]
+    rand_names = []
+    rand_tickets = []
+    rng.shuffle(randindex)
+    for i in randindex:
+        rand_names.append(names[i])
+        rand_tickets.append(tickets[i])
     entries = pd.DataFrame({'Participants': names, 'Tickets': tickets})
     entry_list.append(entries)
     # spinning the wheel and returning the winner
-    winner = SpinWheel(names, tickets, pelton= pelton.get(), randomized=True)
+    winner = SpinWheel(rand_names, rand_tickets, pelton= pelton.get(), randomized=True)
     tk.messagebox.showinfo(message=f"The winner is {winner}!")
     
     # removing one ticket from winner
@@ -59,7 +65,7 @@ def run_lottery(entry_list: list, music_list = []):
     print(winner)
     stop_all_music(music_list)
     music_path = os.path.join(cwd, 'music','selection')
-    pick_music(music_path)
+    music_list.append(pick_music(music_path))
 
 
 def pick_music(music_path):
@@ -88,9 +94,11 @@ def destructor(master, entry_list, music_list):
     if len(entry_list)>1:
         for i, e in enumerate(entry_list):
             e.to_excel(f'{excelpath}_{i}.xlsx')
-    else:
+    elif len(entry_list) == 1:
         print(f'printing to {excelpath}.xlsx')
         entry_list[0].to_excel(f'{excelpath}.xlsx')
+    else:
+        print('no entries, nothing written to excel-file')
     stop_all_music(music_list)
     master.destroy()
     
