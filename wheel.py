@@ -10,6 +10,7 @@ def SpinWheel(names, tickets, randomized=True, pelton=False):
     from turtle import Screen, Turtle
     from colorsys import hsv_to_rgb
     import random as rng
+    import time
     rng.seed()
     try:
         ttl.reset() #god knows why, but the program needs to throw an error 50% of the time to work...            
@@ -64,6 +65,7 @@ def SpinWheel(names, tickets, randomized=True, pelton=False):
         line.begin_poly()
         line.sety(line.ycor()-20)
         line.end_poly()
+        
 
         # Making jet
         jet = Turtle(visible=False)
@@ -73,7 +75,7 @@ def SpinWheel(names, tickets, randomized=True, pelton=False):
         jet.sety(-RADIUS-5*BUCKET_DIAMETER)
         jet.setx(-RADIUS)
         jet.sety(0)
-        jet.end_poly()
+        jet.end_poly()       
 
         #Registering all of our shapes to the screen
         screen.clear()
@@ -145,25 +147,26 @@ def SpinWheel(names, tickets, randomized=True, pelton=False):
             
         #For debugging purposes
         if not randomized:
-            timer=1
+            delay=0.00001 # between 0.0001 and 0.00005
             head=90
             rotCount=0
-            rotMax=1
+            rotMax=0
             randAng =180
-            friction=2
-            maxTimer = 1000
+            friction=1.01 # between 1.005 and 1.01
+            max_delay = 0.3
             
         #For the actual application
         else:
-            timer=1
-            head=90
+            delay=0.00001 + rng.random()*0.00004 # start velocity, between 0.00001 and 0.00005
+            head=rng.randint(1,360)  # initial heading between 1 and 360 degrees
             rotCount=0
-            rotMax=rng.randint(1,4)
-            randAng = rng.randint(1,360)
-            friction=rng.random()*0.1+1
-            maxTimer =rng.randint(1200,1700)
+            rotMax=rng.randint(1,4)  # between 1 and 4 rotations
+            randAng = rng.randint(1,360)  # between 1 and 360
+            friction=rng.random()*0.005+1.005  # between 1.005 and 1.01
+            max_delay = 0.2 + rng.random()*0.1  # between 0.2 and 0.3
         #This part slows down the wheel based upon semi-random criteria
-        while timer<maxTimer:
+
+        while delay<max_delay:
             # Counting the number of rotations
             head_old=head
             head=needle.heading()
@@ -172,24 +175,26 @@ def SpinWheel(names, tickets, randomized=True, pelton=False):
                 
             #Drawing circle with a period of timer milliseconds    
             draw_circle()
-            screen.ontimer(draw_circle(),round(timer))
+            time.sleep(delay)
+            
             
             #If the wheel has spun a couple of times, and some amount of one rotation it will slow down, i.e the update period increases.
-            if rotCount > rotMax and head < randAng or rotCount > rotMax+1:
-                timer*=friction
+            if (rotCount > rotMax and head < randAng) or rotCount > rotMax+1:
+                delay*=friction
+                if not randomized:
+                    print(delay)
                 jetTurtle.hideturtle()
         # checking who the winner is        
         head = needle.heading()%360
         for i,n in enumerate(names):
             if head > divAng[i] and head < divAng[i+1]:
-                # screen.exitonclick()
                 print(f"the winner is {n}")
                 return n
             #Terminating the screen.
         ttl.bye()
-        ttl.mainloop()
+
 # %%
 if __name__=='__main__':
     names=['a','b','c']
     tickets=[1,2,3]
-    winner=SpinWheel(names,tickets,True, True)
+    winner=SpinWheel(names,tickets,False, True)

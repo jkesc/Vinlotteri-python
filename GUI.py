@@ -54,7 +54,7 @@ def run_lottery(entry_list: list, music_list = []):
     entries = pd.DataFrame({'Participants': names, 'Tickets': tickets})
     entry_list.append(entries)
     # spinning the wheel and returning the winner
-    winner = SpinWheel(rand_names, rand_tickets, pelton= pelton.get(), randomized=True)
+    winner = SpinWheel(rand_names, rand_tickets, pelton = pelton.get(), randomized=True)
     tk.messagebox.showinfo(message=f"The winner is {winner}!")
     
     # removing one ticket from winner
