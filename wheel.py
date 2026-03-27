@@ -38,6 +38,8 @@ def SpinWheel(names, tickets, randomized=True, pelton=False):
 
         NUMBER_OF_BUCKETS = 17
         BUCKET_ANGLE = 360 / NUMBER_OF_BUCKETS
+        
+        TEXT_SIZE = 36
         if pelton:
             # BUCKET_DIAMETER = RADIUS*0.4
             BUCKET_DIAMETER = D_factor*0.75
@@ -161,7 +163,7 @@ def SpinWheel(names, tickets, randomized=True, pelton=False):
         for i,n in enumerate(names):
             sector = (divAng[i+1]-divAng[i])/2
             nameTurtle.circle(RADIUS+BUCKET_DIAMETER+30, extent=sector)
-            nameTurtle.write(n)
+            nameTurtle.write(n, font=("Arial", TEXT_SIZE, "normal"))
             nameTurtle.circle(RADIUS+BUCKET_DIAMETER+30, extent=sector)
             
         #setting needle start position to top, in the middle of one slice
