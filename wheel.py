@@ -5,28 +5,55 @@ Created on Sun Jul 17 13:10:37 2022
 
 @author: jkescher
 """
+import turtle as ttl
+from turtle import Screen, Turtle
+from colorsys import hsv_to_rgb
+import random as rng
+import time
+    
+# function for updating the circle
+def draw_circle(turtles, needle, screen, SLICE_ANGLE):
+
+    # rotating turtles in clockwise direction
+    for index, turtle in enumerate(turtles):
+        turtle.right(SLICE_ANGLE/2)
+        
+    needle.right(SLICE_ANGLE/2)
+    screen.update()
+
+
 def SpinWheel(names, tickets, randomized=True, pelton=False):
-    import turtle as ttl
-    from turtle import Screen, Turtle
-    from colorsys import hsv_to_rgb
-    import random as rng
-    import time
     rng.seed()
     try:
         ttl.reset() #god knows why, but the program needs to throw an error 50% of the time to work...            
     finally:
         #Defining the shape of the wheel, and number of slices
-        RADIUS = 180
+        # Scaling relative to runner diameter by approximate measurements from VKL-coffee-mug
+        D_factor = 360/2.54
+        # RADIUS = 180
+        RADIUS = D_factor*2.54/2
         GOAL_NUMBER_OF_WEDGES=200
         number_of_wedges = sum(tickets)*max(round(GOAL_NUMBER_OF_WEDGES/sum(tickets)),1)
         SLICE_ANGLE = 360 / number_of_wedges
 
-        NUMBER_OF_BUCKETS = 21
+        NUMBER_OF_BUCKETS = 17
         BUCKET_ANGLE = 360 / NUMBER_OF_BUCKETS
         if pelton:
-            BUCKET_DIAMETER = RADIUS*0.4
+            # BUCKET_DIAMETER = RADIUS*0.4
+            BUCKET_DIAMETER = D_factor*0.75
         else:
             BUCKET_DIAMETER = 0
+        
+        NUMBER_OF_HOLES = 12
+        # HOLE_RADIUS = RADIUS/10
+        HOLE_RADIUS = 0.235*D_factor/2
+        # HOLE_RING_RADIUS = RADIUS*0.8
+        HOLE_RING_RADIUS = 1.9*D_factor/2
+        
+        # RING_OUTER_RADIUS = RADIUS/2
+        RING_OUTER_RADIUS = D_factor*1.27/2
+        RING_THICKNESS = D_factor*0.155
+        RING_INNER_RADIUS = RING_OUTER_RADIUS-RING_THICKNESS
         
         ## making max timer for rotations with nozzle, rotations after nozzle stopped, and min time for update interval.
         
@@ -75,7 +102,30 @@ def SpinWheel(names, tickets, randomized=True, pelton=False):
         jet.sety(-RADIUS-5*BUCKET_DIAMETER)
         jet.setx(-RADIUS)
         jet.sety(0)
-        jet.end_poly()       
+        jet.end_poly()
+        
+        # Making holes
+        hole = Turtle(visible=False)
+        hole.setx(HOLE_RING_RADIUS)
+        hole.begin_poly()
+        hole.circle(HOLE_RADIUS)
+        hole.end_poly()
+        hole.sety(0)
+        
+        ring = Turtle()
+        ring.penup()
+        ring.setx(-RING_OUTER_RADIUS)
+        ring.begin_poly()
+        ring.setheading(-90)
+        ring.pendown()
+        ring.circle(RING_OUTER_RADIUS)
+        ring.penup()
+        ring.goto(-RING_INNER_RADIUS,0)
+        ring.setheading(-90)
+        ring.pendown()
+        ring.circle(RING_INNER_RADIUS)
+        ring.end_poly()
+        
 
         #Registering all of our shapes to the screen
         screen.clear()
@@ -85,6 +135,8 @@ def SpinWheel(names, tickets, randomized=True, pelton=False):
         screen.register_shape("line", line.get_poly())
         screen.register_shape("needle", needle.get_poly())
         screen.register_shape("bucket", bucket.get_poly())
+        screen.register_shape("hole", hole.get_poly())
+        screen.register_shape("ring", ring.get_poly())
     
         jetTurtle = Turtle("jet")
         jetTurtle.color((0,0,1))
@@ -134,16 +186,16 @@ def SpinWheel(names, tickets, randomized=True, pelton=False):
             turtle.setheading(hue * BUCKET_ANGLE+90)
         
             turtles.append(turtle)
+        # Drawing circles
+        for i in range(NUMBER_OF_HOLES):
+            turtle = Turtle("hole")
+            turtle.color('white')
+            turtle.setheading(360/NUMBER_OF_HOLES * i)
+            turtles.append(turtle)
         
-        # function for updating the circle
-        def draw_circle():
-        
-            # rotating turtles in clockwise direction
-            for index, turtle in enumerate(turtles):
-                turtle.right(SLICE_ANGLE/2)
-                
-            needle.right(SLICE_ANGLE/2)
-            screen.update()
+        turtle = Turtle('ring')
+        turtle.color('white')
+        turtles.append(turtle)
             
         #For debugging purposes
         if not randomized:
@@ -174,7 +226,7 @@ def SpinWheel(names, tickets, randomized=True, pelton=False):
                 rotCount+=1
                 
             #Drawing circle with a period of timer milliseconds    
-            draw_circle()
+            draw_circle(turtles, needle, screen, SLICE_ANGLE)
             time.sleep(delay)
             
             
