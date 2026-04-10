@@ -14,7 +14,7 @@ import os
 from playsound3 import playsound
 import random as rng
 rng.seed()
-
+# TODO: add a parallel process, where you play music and check if the music has stopped every 10 seconds or so. If the music has stopped, restart the music.
 
 def log_entry(entry):
     if eTick.get().isnumeric():

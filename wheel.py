@@ -38,8 +38,10 @@ def SpinWheel(names, tickets, randomized=True, pelton=False):
 
         NUMBER_OF_BUCKETS = 17
         BUCKET_ANGLE = 360 / NUMBER_OF_BUCKETS
-        
-        TEXT_SIZE = 36
+        # TODO: make textsize relative to number of participants
+        # TODO: make textsize relative to screen size
+        # TODO: make popup window fullscreen
+        TEXT_SIZE = 30
         if pelton:
             # BUCKET_DIAMETER = RADIUS*0.4
             BUCKET_DIAMETER = D_factor*0.75
