@@ -243,7 +243,7 @@ def SpinWheel(names, tickets, randomized=True, pelton=False):
         # checking who the winner is        
         head = needle.heading()%360
         for i,n in enumerate(names):
-            if head > divAng[i] and head < divAng[i+1]:
+            if head >= divAng[i] and head < divAng[i+1]:
                 print(f"the winner is {n}")
                 return n
             #Terminating the screen.
