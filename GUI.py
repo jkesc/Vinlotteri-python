@@ -43,6 +43,30 @@ def run_lottery(entry_list: list, music_var:dict, music_list = []):
         i += 1  # because text seems to be 1-indexed...
         names.append(nameTxt.get(f"{i}.0", f"{i}.end"))
         tickets.append(int(ticketTxt.get(f"{i}.0", f"{i}.end")))
+    if len(names)==0:
+        names = ['Emma',
+                 'Olivia',
+                 'Nora',
+                 'Sofie',
+                 'Leah',
+                 'Ella',
+                 'Frida',
+                 'Sofia',
+                 'Ellinor',
+                 'Astrid',
+                 'Noah',
+                 'Jakob',
+                 'Lucas',
+                 'Emil',
+                 'Oscar',
+                 'William',
+                 'Elias',
+                 'Isak',
+                 'Oliver',
+                 'Ludvig']
+        for _ in names:
+            tickets.append(rng.randint(1,7))
+
     randindex = [i for i in range(len(names))]
     rand_names = []
     rand_tickets = []
