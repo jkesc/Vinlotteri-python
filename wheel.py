@@ -10,7 +10,7 @@ from turtle import Screen, Turtle
 from colorsys import hsv_to_rgb
 import random as rng
 import time
-    
+
 # function for updating the circle
 def draw_circle(turtles, needle, screen, SLICE_ANGLE):
 
@@ -69,8 +69,12 @@ def SpinWheel(names, tickets, randomized=True, pelton=False):
         #defining the needle, indicating the winner
         needle = Turtle(visible=False)
         needle.begin_poly()
-        # needle.penup()
-        needle.sety(needle.ycor()+RADIUS+BUCKET_DIAMETER+30)
+        NEEDLE_BASE_W = BUCKET_DIAMETER/2
+        NEEDLE_LEN =RADIUS+BUCKET_DIAMETER+50
+        needle.setx(needle.xcor()+NEEDLE_BASE_W/2)
+        needle.setpos(needle.xcor()-NEEDLE_BASE_W/2, needle.ycor()+NEEDLE_LEN)
+        needle.setpos(needle.xcor()-NEEDLE_BASE_W/2,needle.ycor()-NEEDLE_LEN)
+        needle.setx(needle.xcor()+NEEDLE_BASE_W/2)
         # needle.setheading(90)
         needle.end_poly()
         
@@ -141,13 +145,11 @@ def SpinWheel(names, tickets, randomized=True, pelton=False):
         screen.register_shape("bucket", bucket.get_poly())
         screen.register_shape("hole", hole.get_poly())
         screen.register_shape("ring", ring.get_poly())
-    
+        
         jetTurtle = Turtle("jet")
         jetTurtle.color((0,0,1))
         if not pelton:
             jetTurtle.hideturtle()
-        
-        
         #Dividing the perimeter by number of tickets bought
         ticketSum = sum(tickets)
         divAng=[0]
@@ -167,7 +169,7 @@ def SpinWheel(names, tickets, randomized=True, pelton=False):
             nameTurtle.circle(RADIUS+BUCKET_DIAMETER+30, extent=sector)
             nameTurtle.write(n, font=("Arial", TEXT_SIZE, "normal"))
             nameTurtle.circle(RADIUS+BUCKET_DIAMETER+30, extent=sector)
-            
+
         #setting needle start position to top, in the middle of one slice
         needle=Turtle("needle")
         needle.setheading(90-SLICE_ANGLE/2)
@@ -251,6 +253,7 @@ def SpinWheel(names, tickets, randomized=True, pelton=False):
 
 # %%
 if __name__=='__main__':
-    names=['a','b','c']
-    tickets=[1,2,3]
+    
+    names=['a','b','c','d','e','f','g','h','i','j']
+    tickets=[2]*len(names)
     winner=SpinWheel(names,tickets,False, True)
