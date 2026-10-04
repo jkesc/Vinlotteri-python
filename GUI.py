@@ -14,7 +14,6 @@ import os
 from playsound3 import playsound
 import random as rng
 rng.seed()
-# TODO: add a parallel process, where you play music and check if the music has stopped every 10 seconds or so. If the music has stopped, restart the music.
 
 def log_entry(entry):
     if eTick.get().isnumeric():
@@ -31,11 +30,11 @@ def log_entry(entry):
         eTick.insert(0,"Must be an integer")
 
 
-def run_lottery(entry_list: list, music_list = []):      
+def run_lottery(entry_list: list, music_var:dict, music_list = []):   
     cwd = os.getcwd()
-    music_path = os.path.join(cwd, 'music','spinning')
+    music_var['path'] = os.path.join(cwd, 'music','spinning')
     stop_all_music(music_list)
-    music_list.append(pick_music(music_path))
+    music_list.append(pick_music(music_var))
     names = []
     tickets = []
     lastRow = int(nameTxt.index('end').split('.')[0])-2
@@ -53,6 +52,7 @@ def run_lottery(entry_list: list, music_list = []):
         rand_tickets.append(tickets[i])
     entries = pd.DataFrame({'Participants': names, 'Tickets': tickets})
     entry_list.append(entries)
+    write_to_excel(entry_list)   
     # spinning the wheel and returning the winner
     winner = SpinWheel(rand_names, rand_tickets, pelton = pelton.get(), randomized=True)
     tk.messagebox.showinfo(message=f"The winner is {winner}!")
@@ -64,11 +64,12 @@ def run_lottery(entry_list: list, music_list = []):
         ticketTxt.insert(tk.END, f"{i}\n")
     print(winner)
     stop_all_music(music_list)
-    music_path = os.path.join(cwd, 'music','selection')
-    music_list.append(pick_music(music_path))
+    music_var['path'] = os.path.join(cwd, 'music','selection')
+    music_list.append(pick_music(music_var))
 
 
-def pick_music(music_path):
+def pick_music(music_var):
+    music_path = music_var['path']
     if os.path.exists(music_path):
         music_files = os.listdir(music_path)
         music_files = [f for f in music_files if f.endswith('.mp3')]
@@ -86,11 +87,14 @@ def stop_all_music(music_list):
                 m.stop()
         except Exception:
             continue
+        music_list.pop()
 
-
-def destructor(master, entry_list, music_list):
+def write_to_excel(entry_list):
+    print('saving participant entries')
     now = dt.datetime.now()
-    excelpath = os.path.join(os.getcwd(),'out',f'lottery_{now.year}_{now.month}_{now.day}_{now.hour}_{now.minute}')
+    outpath = os.path.join(os.getcwd(),'out')
+    excelpath = os.path.join(outpath,f'lottery_{now.year}_{now.month}_{now.day}_{now.hour}_{now.minute}')
+    os.makedirs(outpath,exist_ok=True)
     if len(entry_list)>1:
         for i, e in enumerate(entry_list):
             e.to_excel(f'{excelpath}_{i}.xlsx')
@@ -99,18 +103,41 @@ def destructor(master, entry_list, music_list):
         entry_list[0].to_excel(f'{excelpath}.xlsx')
     else:
         print('no entries, nothing written to excel-file')
+
+def destructor(master, entry_list, music_list):
+    write_to_excel(entry_list)
     stop_all_music(music_list)
     master.destroy()
+
+def repeatMusic(music_list, music_var, master):
+    try:
+        for i, m in enumerate(music_list):
+            if not m.is_alive():
+                music_list.pop(i)
+                music_list.append(pick_music(music_var))
+        master.after(1000,
+                        repeatMusic,
+                        music_list=music_list,
+                        music_var=music_var,
+                        master=master)
+    except:
+        return
     
+ 
 
 if __name__ == '__main__':      
     entry_list = []
     music_list = []
     cwd = os.getcwd()
-    music_path = os.path.join(cwd, 'music','selection')
-    stop_all_music(music_list)
-    music_list.append(pick_music(music_path))
     master = tk.Tk()
+    music_var = {'path':os.path.join(cwd, 'music','selection')}
+    stop_all_music(music_list)
+    music_list.append(pick_music(music_var))
+    master.after(1000,
+                 repeatMusic,
+                 music_list=music_list,
+                 music_var=music_var,
+                 master=master)
     nameText = ttk.Label(master, text="Name")
     nameText.grid(row=0,column=0)
     ticketText = ttk.Label(master, text="Tickets")
@@ -133,7 +160,7 @@ if __name__ == '__main__':
     
     QuitButton = ttk.Button(master, text="Quit", command=lambda: destructor(master, entry_list, music_list))
     QuitButton.grid(row=2,column=0, sticky=tk.W)
-    RunButton = ttk.Button(master, text="Run lottery!", command=lambda:run_lottery(entry_list, music_list))
+    RunButton = ttk.Button(master, text="Run lottery!", command=lambda:run_lottery(entry_list, music_var, music_list))
     RunButton.grid(row=2,column=2)
     pelton = tk.BooleanVar()
     pelton.set(True)
