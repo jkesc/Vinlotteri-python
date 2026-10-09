@@ -140,10 +140,10 @@ def repeatMusic(music_list, music_var, master):
                 music_list.pop(i)
                 music_list.append(pick_music(music_var))
         master.after(1000,
-                        repeatMusic,
-                        music_list=music_list,
-                        music_var=music_var,
-                        master=master)
+                     repeatMusic,
+                     music_list,
+                     music_var,
+                     master)
     except:
         return
     
@@ -159,9 +159,9 @@ if __name__ == '__main__':
     music_list.append(pick_music(music_var))
     master.after(1000,
                  repeatMusic,
-                 music_list=music_list,
-                 music_var=music_var,
-                 master=master)
+                 music_list,
+                 music_var,
+                 master)
     nameText = ttk.Label(master, text="Name")
     nameText.grid(row=0,column=0)
     ticketText = ttk.Label(master, text="Tickets")

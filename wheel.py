@@ -32,7 +32,7 @@ def SpinWheel(names, tickets, randomized=True, pelton=False):
     #Making the screen to draw on
     screen = Screen()
     screen.tracer(False)
-    screen.setup(400,800)
+    # screen.setup(400,800)
     #Defining the shape of the wheel, and number of slices
     # Scaling relative to runner diameter by approximate measurements from VKL-coffee-mug
     RADIUS_GOAL = min(screen.window_height(),screen.window_width())/4
